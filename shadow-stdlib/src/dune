@@ -5,6 +5,7 @@
  (preprocess no_preprocessing))
 
 (rule
+ (mode promote)
  (targets shadow_stdlib.mli)
  (deps %{ocaml_where}/stdlib.cma)
  (action

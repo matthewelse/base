@@ -299,6 +299,14 @@ rule line = parse
   | "module Camlinternal" _*
     { "" (* We can't deprecate these *) }
   | "module Bigarray" _* { "" (* Don't deprecate it yet *) }
+  | "type " (params? as params) (id as id) " : value mod contended portable" (_* as def)
+      { sprintf "type nonrec %s%s : value mod contended portable = %sStdlib.%s%s\n%s"
+          params id
+          params id
+          (if is_alias id then "" else def)
+          (match type_replacement id with
+           | Some replacement -> replace ~is_exn:false id replacement
+           | None -> deprecated_msg ~is_exn:false id) }
   | "type " (params? as params) (id as id) (_* as def)
       { sprintf "type nonrec %s%s = %sStdlib.%s%s\n%s"
           params id
